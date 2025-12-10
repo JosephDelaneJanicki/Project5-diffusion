@@ -242,32 +242,48 @@ body {
 /* Deep purple nebula layer */
 #bg-layer1 {
   background-image: url('images/cosmic-nebula-art-stockcake.webp');
-  animation: float1 30s linear infinite alternate;
 }
 
 /* Star fog layer */
 #bg-layer2 {
   background-image: url('images/nebula-background-kknkmsiypiqwal4s.jpg');
-  animation: float2 45s linear infinite alternate;
 }
 
 /* Star dust layer */
 #bg-layer3 {
   background-image: url('cosmic-color-fusion-stockcake.webp');
-  animation: float3 60s linear infinite alternate;
 }
 
-@keyframes float1 {
-  from { transform: translate3d(0%, 0%, 0) scale(1.05); }
-  to   { transform: translate3d(-10%, -12%, 0) scale(1.12); }
+/* === Cosmic shimmer – no movement, only color + glow changes === */
+
+/* Subtle color shift on top layer */
+#bg-layer3 {
+  animation: nebulaHue 40s ease-in-out infinite alternate;
 }
 
-@keyframes float2 {
-  from { transform: translate3d(0%, 0%, 0) scale(1.05); }
-  to   { transform: translate3d(8%, -8%, 0) scale(1.1); }
+@keyframes nebulaHue {
+  0% {
+    filter: hue-rotate(0deg) brightness(1.0);
+  }
+  50% {
+    filter: hue-rotate(30deg) brightness(1.15);
+  }
+  100% {
+    filter: hue-rotate(-20deg) brightness(0.95);
+  }
 }
 
-@keyframes float3 {
-  from { transform: translate3d(0%, 0%, 0) scale(1.03); }
-  to   { transform: translate3d(-6%, 6%, 0) scale(1.08); }
+/* Gentle breathing on mid layer */
+#bg-layer2 {
+  animation: nebulaGlow 26s ease-in-out infinite alternate;
 }
+
+@keyframes nebulaGlow {
+  0% {
+    filter: brightness(0.9);
+  }
+  100% {
+    filter: brightness(1.2);
+  }
+}
+
