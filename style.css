@@ -22,25 +22,37 @@
   box-sizing: border-box;
 }
 
+/* Base page setup */
 html, body {
   margin: 0;
   padding: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
                "SF Pro Text", sans-serif;
-  background:
-    radial-gradient(circle at 10% 0%, #29124d 0, transparent 55%),
-    radial-gradient(circle at 90% 100%, #182b52 0, transparent 55%),
-    radial-gradient(circle at 50% 100%, #45206f 0, transparent 60%),
-    linear-gradient(180deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  background: #050510;   /* fallback for slow-loading nebula */
   color: var(--text-main);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
+/* Main content panel – translucent so nebula shows through */
 .page {
-  max-width: 960px;
-  margin: 32px auto 48px auto;
-  padding: 0 16px 32px 16px;
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 3rem auto 4rem;
+  padding: 0 1.5rem 3rem;
+
+  /* glassy astral-dreamcore gradient */
+  background: radial-gradient(circle at top,
+              rgba(10, 10, 40, 0.8) 0%,
+              rgba(3, 3, 12, 0.9) 45%,
+              rgba(2, 2, 8, 0.95) 100%);
+  border-radius: 2rem;
+  box-shadow:
+    0 0 70px rgba(40, 20, 120, 0.45),
+    0 0 140px rgba(120, 80, 220, 0.25);
 }
+
 
 /* Hero */
 
