@@ -6,7 +6,7 @@ title: "Project 4 – Diffusion Models"
 <div id="bg-layer2"></div>
 <div id="bg-layer3"></div>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="{{ '/style.css' | relative_url }}">
 
 <div class="page">
 
