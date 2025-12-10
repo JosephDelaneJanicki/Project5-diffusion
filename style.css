@@ -206,56 +206,64 @@ html, body {
   }
 }
 
-/* --- Astral Dreamcore Parallax Nebula Background --- */
+/* === Astral Dreamcore Parallax Nebula Background – local images === */
 
 body {
-    margin: 0;
-    background: #050510;
-    overflow-x: hidden;
+  position: relative;
+  margin: 0;
+  background: #050510;
+  overflow-x: hidden;
 }
 
-/* Parallax layers (far to near) */
-#bg-layer1, #bg-layer2, #bg-layer3 {
-    position: fixed;
-    top: 0; 
-    left: 0;
-    width: 110%; 
-    height: 110%;
-    background-size: cover;
-    background-position: center;
-    z-index: -10;
-    opacity: 0.35;
+.page {
+  position: relative;
+  z-index: 1;
+}
+
+#bg-layer1,
+#bg-layer2,
+#bg-layer3 {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  opacity: 0.38;
+  pointer-events: none;
 }
 
 /* Deep purple nebula layer */
 #bg-layer1 {
-    background-image: url('images/download.jpg');
-    animation: float1 60s linear infinite alternate;
+  background-image: url('images/download.jpg');
+  animation: float1 60s linear infinite alternate;
 }
 
 /* Star fog layer */
 #bg-layer2 {
-    background-image: url('images/download (1).jpg');
-    animation: float2 100s linear infinite alternate;
+  background-image: url('images/download (1).jpg');
+  animation: float2 100s linear infinite alternate;
 }
 
 /* Star dust layer */
 #bg-layer3 {
-    background-image: url('images/download (2).jpg');
-    animation: float3 150s linear infinite alternate;
+  background-image: url('images/download (2).jpg');
+  animation: float3 150s linear infinite alternate;
 }
 
 @keyframes float1 {
-    from { transform: translate(0%, 0%); }
-    to   { transform: translate(-2%, -5%); }
+  from { transform: translate3d(0%, 0%, 0); }
+  to   { transform: translate3d(-2%, -4%, 0); }
 }
 
 @keyframes float2 {
-    from { transform: translate(0%, 0%); }
-    to   { transform: translate(-3%, -3%); }
+  from { transform: translate3d(0%, 0%, 0); }
+  to   { transform: translate3d(-3%, -2%, 0); }
 }
 
 @keyframes float3 {
-    from { transform: translate(0%, 0%); }
-    to   { transform: translate(-4%, -2%); }
+  from { transform: translate3d(0%, 0%, 0); }
+  to   { transform: translate3d(-4%, -1%, 0); }
 }
