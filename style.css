@@ -229,19 +229,19 @@ body {
 
 /* Deep purple nebula layer */
 #bg-layer1 {
-    background-image: url('https://i.imgur.com/7yS6M5c.jpeg');
+    background-image: url('images/download.jpg');
     animation: float1 60s linear infinite alternate;
 }
 
 /* Star fog layer */
 #bg-layer2 {
-    background-image: url('https://i.imgur.com/1qP7kFJ.jpeg');
+    background-image: url('images/download (1).jpg');
     animation: float2 100s linear infinite alternate;
 }
 
 /* Star dust layer */
 #bg-layer3 {
-    background-image: url('https://i.imgur.com/z9ybm4b.jpeg');
+    background-image: url('images/download (2).jpg');
     animation: float3 150s linear infinite alternate;
 }
 
