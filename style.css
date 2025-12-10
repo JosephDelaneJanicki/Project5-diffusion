@@ -241,19 +241,19 @@ body {
 
 /* Deep purple nebula layer */
 #bg-layer1 {
-  background-image: url('images/cosmic-nebula-art-stockcake.jpg');
+  background-image: url('images/cosmic-nebula-art-stockcake.webp');
   animation: float1 60s linear infinite alternate;
 }
 
 /* Star fog layer */
 #bg-layer2 {
-  background-image: url('images/download (1).jpg');
+  background-image: url('images/nebula-background-kknkmsiypiqwal4s.jpg');
   animation: float2 100s linear infinite alternate;
 }
 
 /* Star dust layer */
 #bg-layer3 {
-  background-image: url('images/download (2).jpg');
+  background-image: url('cosmic-color-fusion-stockcake.webp');
   animation: float3 150s linear infinite alternate;
 }
 
