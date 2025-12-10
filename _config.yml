@@ -1,0 +1,10 @@
+title: "Project 4 – Diffusion Models"
+description: "Diffusion model experiments, DeepFloyd-IF, and a DDPM trained on MNIST."
+theme: null
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+plugins:
+  - jekyll-seo-tag

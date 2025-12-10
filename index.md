@@ -1,0 +1,315 @@
+---
+title: "Project 4 – Diffusion Models"
+---
+<!-- Astral Dreamcore Background Layers -->
+<div id="bg-layer1"></div>
+<div id="bg-layer2"></div>
+<div id="bg-layer3"></div>
+
+<link rel="stylesheet" href="style.css">
+
+<div class="page">
+
+<header class="hero">
+  <h1>Project 4 – Diffusion Models</h1>
+  <p class="subtitle">
+    DeepFloyd-IF, forward & reverse processes, classifier-free guidance, and a scratch DDPM on MNIST.
+  </p>
+  <p class="meta">
+    CSCI Project • Spring 2025 • Joseph Janicki
+  </p>
+</header>
+
+<section class="card">
+  <h2>Objective</h2>
+  <p>
+    This project builds practical intuition for diffusion models – from the
+    forward noising process to iterative denoising and full DDPM sampling.
+  </p>
+  <ul>
+    <li><strong>Part 0:</strong> Setup DeepFloyd IF and perform text-to-image sampling.</li>
+    <li><strong>Part 1:</strong> Implement the forward process, Gaussian denoising, and one-step UNet denoising.</li>
+    <li><strong>Part 2:</strong> Use the diffusion model for sampling, classifier-free guidance, and image-to-image edits.</li>
+    <li><strong>Part 3 (Grad only):</strong> Implement visual anagrams using dual prompts.</li>
+    <li><strong>Part 4 (Optional, Extra Credit):</strong> Train your own denoising UNet and build a DDPM on MNIST.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Part 0 – Setup & Text-to-Image Sampling</h2>
+  <p>
+    I used the DeepFloyd-IF model release and either precomputed text embeddings
+    or prompts such as <code>"a high quality photo"</code> to generate images.
+  </p>
+
+  <h3>Text-to-Image examples</h3>
+  <p>
+    For each provided text prompt, an image was generated
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/image.png" alt="three sampled images for provided prompts">
+      <figcaption> 3 sampled images across the provided prompts.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Part 1 – Understanding the Forward & Reverse Processes</h2>
+
+  <h3>1.1 Forward Process (Adding Noise)</h3>
+  <p>
+    I implemented the forward process <code>q(x_t | x_0)</code> using the pre-defined
+    schedule <code>alphas_cumprod</code> alpha is a signal that determins how much of the original image is preserved in each step, root alpha times x at 0 determines how much of the original image is preserved, in the right side of the equation subtracting root alpha from one gets the amount of signal that will be corrupted by noise, epsilon is the total guassian noise at X of n, n being the total number of time steps, all are computed at once in order to have every time step point to the original image, THE FORWARD PASS IS NOT ITERATIVE:
+  </p>
+  <p class="equation">
+    x<sub>t</sub> = √&alpha;̅<sub>t</sub> x<sub>0</sub> + √(1 − &alpha;̅<sub>t</sub>) ε, &nbsp; ε ∼ 𝒩(0, I)
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part1.1_forwardprocessnoising.png" alt="Forward process noising at different timesteps">
+      <figcaption>Part 1.1 – image as noise is added at t = 250, 500, 750.</figcaption>
+    </figure>
+  </div>
+
+  <h3>1.2 Traditional Denoising (Gaussian Blur)</h3>
+  <p>
+    I applied Gaussian filtering to the three noisy images. As expected, the
+    blur removes some noise but also destroys high-frequency detail, especially
+    at high noise levels.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part1.2_Traditional Denoising guassian side by side.png" alt="Gaussian denoising grid">
+      <figcaption>Part 1.2 – noisy vs. Gaussian-denoised images for t = 250, 500, 750.</figcaption>
+    </figure>
+  </div>
+
+  <h3>1.3 One-Step Denoising Using Pretrained UNet</h3>
+  <p>
+    Using the DeepFloyd stage-1 denoising UNet, I predicted the noise
+    <code>ε̂</code> and recovered
+    <code>x̂₀</code> via the rearranged forward equation. Compared to Gaussian blur,
+    the UNet preserves much sharper structure.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part1.3_one step denoising.png" alt="UNet one-step denoising">
+      <figcaption>Part 1.3 – original, noisy, and one-step UNet-denoised images.</figcaption>
+    </figure>
+  </div>
+
+  <h3>1.4 Iterative Denoising</h3>
+  <p>
+    I implemented <code>iterative_denoise</code> with a strided timestep list
+    starting from t = 990 and stepping down to 0. This approximate reverse
+    process gradually removes noise and recovers a clean image.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part1.4_every fifth loop.png" alt="Iterative denoising progress">
+      <figcaption>Part 1.4 – every 5th step of iterative denoising (t decreasing).</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Part 2 – Sampling, CFG, and Image-to-Image</h2>
+
+  <h3>2.1 Diffusion Model Sampling from Noise</h3>
+  <p>
+    By setting <code>i_start = 0</code> in <code>iterative_denoise</code>, the model starts
+    from pure noise and generates images corresponding to the null prompt
+    <code>"a high quality photo"</code>.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part1.5 five sampled images.png" alt="Five 'a high quality photo' samples">
+      <figcaption>Part 1.6 – five samples for the null prompt "a high quality photo".</figcaption>
+    </figure>
+  </div>
+
+  <h3>2.2 Classifier-Free Guidance</h3>
+  <p>
+    I implemented <code>iterative_denoise_cfg</code>, blending unconditional and
+    conditional noise estimates:
+  </p>
+  <p class="equation">
+    ε = ε<sub>u</sub> + γ (ε<sub>c</sub> − ε<sub>u</sub>)
+  </p>
+  <p>
+    With γ &gt; 1, the images are sharper and align more strongly with the text
+    prompt, at the cost of some diversity.
+  </p>
+
+  <h3>2.3 Image-to-Image Translation (SDEdit-style)</h3>
+  <p>
+    Starting from a real test image, I noised it to various levels (t indices
+    [1, 3, 5, 7, 10, 20]) and then denoised with CFG using the prompt
+    <code>"a high quality photo"</code>. Increasing the noise level gave more freedom
+    for the model to “edit” the original image while still landing on a plausible
+    image manifold.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part1.6 5 a high quality photo samples.png" alt="Image-to-image edits of the test image">
+      <figcaption> – edits of the provided test image at various noise levels.</figcaption>
+    </figure>
+  </div>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/sledit.png" alt="Image-to-image edits of my own images">
+      <figcaption>
+         – edits of my own image, the SL logo, you can see some of the images really took after the shape of the logo
+      </figcaption>
+    </figure>
+        <figure>
+      <img src="images/part1.7 edits of my two own images.png" alt="Image-to-image edits of my own images">
+      <figcaption>
+         – edits of the wukong reference picture, images identified the red center of the image and that theres "a face" through generalization it defaulted to human as the level of detail isnt enough at the resolution to really tell the model "monkey face"
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/SL_Logo (1).jpg" alt="Synergy Luna logo source image">
+      <figcaption>Original Synergy Luna logo used as a source image.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/wukong.webp" alt="Wukong reference source image">
+      <figcaption>
+        Wukong reference image – generations captured the dominant reds and facial structure.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Part 3 – Visual Anagrams (Graduate Component)</h2>
+  <p>
+    I implemented the visual anagrams algorithm from CVPR 2024, using two
+    prompts that swap roles when the image is flipped upside-down.
+  </p>
+  <p>
+    At each step, I computed two noise estimates with different prompts,
+    one on the original image and one on the flipped image, then averaged
+    the estimates before applying the reverse step.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/part 3 old man campfire anagram.png" alt="Old man / campfire anagram">
+      <figcaption>
+        Visual anagram: upright vs. flipped interpretation ("old man" vs. "campfire" prompt pair).
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="images/part 3 two illusions of my own choice.png" alt="Two additional visual anagrams">
+      <figcaption>Two additional visual anagram illusions of my own design.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Part 4 – Training a DDPM on MNIST (Extra Credit)</h2>
+
+  <h3>4.1 Unconditional UNet Denoiser</h3>
+  <p>
+    I first trained an unconditional UNet to predict noise on MNIST digits. Loss
+    drops rapidly in the first epoch and then refines more gradually.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/noisingprocess.png" alt="Forward noising process for MNIST">
+      <figcaption>Noising process visualization for MNIST digits.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/denoiser_test_examples_epoch_one.png" alt="Epoch 1 denoiser test examples">
+      <figcaption>Epoch 1 – denoiser test examples.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/denoiser_test_examples_epoch_five.png" alt="Epoch 5 denoiser test examples">
+      <figcaption>Epoch 5 – denoiser test examples.</figcaption>
+    </figure>
+  </div>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/denoiser_training_loss.png" alt="Denoiser training loss curve">
+      <figcaption>Denoiser training loss curve.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/denoiser_test_set_verying_sigma.png" alt="Denoiser performance under varying sigmas">
+      <figcaption>Denoiser performance for varying noise levels σ.</figcaption>
+    </figure>
+  </div>
+
+  <h3>4.2 Time-Conditioned DDPM</h3>
+  <p>
+    Next, I trained a time-conditioned UNet and wrapped it with a DDPM sampler.
+    Over 20 epochs, samples become progressively more digit-like and sharp.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/time_conditioned_DDPM_samples_epoch_5.png" alt="Epoch 5 DDPM samples">
+      <figcaption>Time-conditioned DDPM samples – Epoch 5.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/time_conditioned_DDPM_samples_epoch_20.png" alt="Epoch 20 DDPM samples">
+      <figcaption>Time-conditioned DDPM samples – Epoch 20.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/Time_Conditioned_UNET_Training_Loss.png" alt="Time-conditioned UNet training loss">
+      <figcaption>Time-conditioned UNet training loss curve.</figcaption>
+    </figure>
+  </div>
+
+  <h3>4.3 Class-Conditional DDPM with Classifier-Free Guidance</h3>
+  <p>
+    The final model is a class-conditional UNet trained with masked-out labels
+    for classifier-free guidance. At sampling time, unconditional and conditional
+    predictions are combined with a guidance scale γ.
+  </p>
+
+  <div class="image-grid">
+    <figure>
+      <img src="images/Class_Conditional_Unet_Training_Loss.png" alt="Class-conditional UNet training loss">
+      <figcaption>Class-conditional UNet training loss curve.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/4_samples_per_digit_0-9_with_classifier-free_guidance.png" alt="4 samples per digit with guidance">
+      <figcaption>Four samples per digit (0–9) with classifier-free guidance.</figcaption>
+    </figure>
+  </div>
+
+  <p class="note">
+    Guidance produces sharp, class-consistent digits, at the cost of some sample
+    diversity – a tradeoff similar to what we observed with text CFG in Part 2.
+  </p>
+</section>
+
+<section class="card">
+  <h2>Implementation Notes</h2>
+  <ul>
+    <li>All models were trained and evaluated in PyTorch.</li>
+    <li>Random seeds were controlled via <code>torch.manual_seed</code> for reproducible samples.</li>
+    <li>Checkpoints were saved after major training stages to survive Colab timeouts.</li>
+  </ul>
+</section>
+
+<footer class="footer">
+  <p>Designed in <span class="astral">Astral Dreamcore</span> style for Synergy Luna.</p>
+</footer>
+
+</div>

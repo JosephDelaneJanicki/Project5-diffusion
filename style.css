@@ -1,0 +1,261 @@
+/* Astral Dreamcore – Project 4 report styling */
+
+:root {
+  --bg-deep: #050516;
+  --bg-gradient-start: #050516;
+  --bg-gradient-end: #180b3a;
+  --card-bg: rgba(10, 10, 30, 0.88);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --accent-gold: #f7d87c;
+  --accent-soft: #c4a8ff;
+  --text-main: #f5f5ff;
+  --text-muted: #a6a2c8;
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.65);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --transition-fast: 160ms ease-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "SF Pro Text", sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%, #29124d 0, transparent 55%),
+    radial-gradient(circle at 90% 100%, #182b52 0, transparent 55%),
+    radial-gradient(circle at 50% 100%, #45206f 0, transparent 60%),
+    linear-gradient(180deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 960px;
+  margin: 32px auto 48px auto;
+  padding: 0 16px 32px 16px;
+}
+
+/* Hero */
+
+.hero {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 28px 24px 24px 24px;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(247, 216, 124, 0.09), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(161, 127, 255, 0.16), transparent 60%),
+    rgba(5, 5, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(16px);
+}
+
+.hero h1 {
+  margin: 0 0 8px 0;
+  font-size: clamp(2.1rem, 3vw, 2.5rem);
+  background: linear-gradient(120deg, #f7d87c, #ffe6ff, #a8c5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 0 0 6px 0;
+  font-size: 0.98rem;
+  color: var(--text-muted);
+}
+
+.meta {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+
+/* Cards / Sections */
+
+.card {
+  margin-bottom: 24px;
+  padding: 20px 20px 18px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 6px;
+}
+
+.card h3 {
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-size: 1.06rem;
+  color: var(--accent-gold);
+}
+
+.card p,
+.card li {
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.card ul {
+  padding-left: 1.2rem;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+/* Utility text */
+
+.note {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  border-left: 3px solid var(--accent-soft);
+  padding-left: 10px;
+  margin-top: 10px;
+}
+
+.equation {
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.9rem;
+  color: var(--accent-soft);
+  background: rgba(10, 10, 30, 0.9);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px 10px;
+  display: inline-block;
+  margin: 8px 0;
+}
+
+/* Images */
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-gap: 14px;
+  margin: 12px 0;
+}
+
+.image-grid figure {
+  margin: 0;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: rgba(8, 8, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.image-grid img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
+.image-grid figcaption {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.image-grid figure:hover {
+  transform: translateY(-3px);
+  border-color: rgba(247, 216, 124, 0.5);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.75);
+}
+
+/* Footer */
+
+.footer {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.footer .astral {
+  color: var(--accent-gold);
+  letter-spacing: 0.04em;
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 640px) {
+  .card {
+    padding: 16px 14px 14px 14px;
+  }
+
+  .hero {
+    padding: 22px 16px 18px 16px;
+  }
+}
+
+/* --- Astral Dreamcore Parallax Nebula Background --- */
+
+body {
+    margin: 0;
+    background: #050510;
+    overflow-x: hidden;
+}
+
+/* Parallax layers (far to near) */
+#bg-layer1, #bg-layer2, #bg-layer3 {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 110%; 
+    height: 110%;
+    background-size: cover;
+    background-position: center;
+    z-index: -10;
+    opacity: 0.35;
+}
+
+/* Deep purple nebula layer */
+#bg-layer1 {
+    background-image: url('https://i.imgur.com/7yS6M5c.jpeg');
+    animation: float1 60s linear infinite alternate;
+}
+
+/* Star fog layer */
+#bg-layer2 {
+    background-image: url('https://i.imgur.com/1qP7kFJ.jpeg');
+    animation: float2 100s linear infinite alternate;
+}
+
+/* Star dust layer */
+#bg-layer3 {
+    background-image: url('https://i.imgur.com/z9ybm4b.jpeg');
+    animation: float3 150s linear infinite alternate;
+}
+
+@keyframes float1 {
+    from { transform: translate(0%, 0%); }
+    to   { transform: translate(-2%, -5%); }
+}
+
+@keyframes float2 {
+    from { transform: translate(0%, 0%); }
+    to   { transform: translate(-3%, -3%); }
+}
+
+@keyframes float3 {
+    from { transform: translate(0%, 0%); }
+    to   { transform: translate(-4%, -2%); }
+}
