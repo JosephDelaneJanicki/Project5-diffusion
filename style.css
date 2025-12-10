@@ -34,24 +34,16 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Main content panel – translucent so nebula shows through */
+/* Main content wrapper – mostly transparent so nebula shows */
 .page {
   position: relative;
   z-index: 1;
   max-width: 1100px;
   margin: 3rem auto 4rem;
   padding: 0 1.5rem 3rem;
-
-  /* glassy astral-dreamcore gradient */
-  background: radial-gradient(circle at top,
-              rgba(10, 10, 40, 0.8) 0%,
-              rgba(3, 3, 12, 0.9) 45%,
-              rgba(2, 2, 8, 0.95) 100%);
-  border-radius: 2rem;
-  box-shadow:
-    0 0 70px rgba(40, 20, 120, 0.45),
-    0 0 140px rgba(120, 80, 220, 0.25);
+  background: transparent;   /* let the nebula show */
 }
+
 
 
 /* Hero */
